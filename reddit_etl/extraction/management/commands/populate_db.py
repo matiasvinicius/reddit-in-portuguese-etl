@@ -73,11 +73,11 @@ class Command(BaseCommand):
             for comment in submission_praw.comments:
                 comment_praw = reddit.comment(comment.id)
 
-                author_comment_praw = reddit.redditor(comment_praw.author.id)
+                author_comment_praw = reddit.redditor(comment_praw.author)
 
                 Author.objects.update_or_create(
                     id = author_comment_praw.id,
-                    username = author_comment_praw.username,
+                    username = author_comment_praw.name,
                     created_utc = datetime.fromtimestamp(author_comment_praw.created_utc, tz=timezone.utc),
                     defaults={
                         "has_verified_email": author_comment_praw.has_verified_email,
@@ -98,11 +98,9 @@ class Command(BaseCommand):
                         "distinguished": comment_praw.distinguished,
                         "is_submitter": comment_praw.is_submitter,
                         "score": comment_praw.score,
-                        "link_flair_text": comment_praw.link_flair_text,
+                        "permalink": comment_praw.permalink,
                         "extraction_date": datetime.now(tz=timezone.utc)
-                    }
+                    }  
                 )
 
-            break
-
-            if i==999: print("Change dates")
+            #if i==999: print("Change dates")
