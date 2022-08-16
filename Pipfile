@@ -12,6 +12,7 @@ psaw = "*"
 pandas = "*"
 matplotlib = "*"
 praw = "*"
+tqdm = "*"
 
 [dev-packages]
 ipykernel = "*"
