@@ -1,3 +1,4 @@
+from distutils.command.build_scripts import first_line_re
 from extraction.models import *
 from django.core.management.base import BaseCommand
 from extraction.lib.praw_utils import create_praw_instace
@@ -17,6 +18,7 @@ class Command(BaseCommand):
         before = options["before"]
         after = options["after"]
         reddit = create_praw_instace()
+        first_after = None
 
         subreddit_list = [s.name for s in Subreddit.objects.all()]
         if not options["subreddit"] is None:
@@ -36,17 +38,28 @@ class Command(BaseCommand):
                     }
                 )
 
-        if not before is None: 
-            before = datetime.fromisoformat(before)
+            
+
+        if before is None: 
+            before = int((datetime.now(timezone.utc) + timedelta(hours=-6)).timestamp())
+        else:
+            before = int((datetime.fromisoformat(before)).timestamp())
+          
+
         if after is None: 
-            after = datetime.now() - timedelta(1)
+            first_after = [int(s.created_utc.timestamp()) for s in Subreddit.objects.all() if s.name in subreddit_list]
+        else: 
+            first_after = int((datetime.fromisoformat(after)).timestamp())
 
+        print(before)
 
-        before = int((datetime.now(timezone.utc) + timedelta(hours=-6)).timestamp())
-        after = int((datetime.now(timezone.utc) + timedelta(days=-10)).timestamp())
-
-        for subreddit_to_extract in tqdm(subreddit_list):
+        for subreddit_to_extract in subreddit_list:
             print(f"Extracting from r/{subreddit_to_extract}")
+
+            if type(first_after) is list:
+                after = first_after.pop(0)
+            else: 
+                after = first_after
 
             while int((datetime.utcfromtimestamp(after) + timedelta(hours=+6)).timestamp()) < before:
                 print('before', datetime.utcfromtimestamp(before))
@@ -64,6 +77,11 @@ class Command(BaseCommand):
                 for submission in result.json()["data"]:         
                     author_praw = reddit.redditor(submission["author"])
                     submission_praw = reddit.submission(submission["id"])    
+
+                    try: 
+                        author_praw.id is None
+                    except:
+                        continue
 
                     Author.objects.update_or_create(
                         id = author_praw.id,
@@ -113,6 +131,9 @@ class Command(BaseCommand):
 
                     for comment in submission_praw.comments:
                         comment_praw = reddit.comment(comment.id)
+                        
+                        if comment_praw.author is None:
+                            continue
 
                         author_comment_praw = reddit.redditor(comment_praw.author)
 
