@@ -39,7 +39,7 @@ class Submission(models.Model):
     permalink = models.CharField(max_length=1024)
     score = models.IntegerField()
     url = models.CharField(max_length=1024)
-    edited = models.BooleanField()
+    edited = models.DateTimeField()
     upvote_ratio = models.FloatField()
     extraction_date = models.DateTimeField()
     # treatment_tags
