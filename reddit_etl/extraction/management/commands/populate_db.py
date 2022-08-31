@@ -88,7 +88,7 @@ class Command(BaseCommand):
                         Author.objects.update_or_create(
                             id ='removed',
                             username = None,
-                            created_utc = datetime(1970,1,1),
+                            created_utc = datetime(1970,1,1, tzinfo=timezone.utc),
                             defaults={
                                 "has_verified_email": False,
                                 "karma": 0,
@@ -153,23 +153,27 @@ class Command(BaseCommand):
                             author_removed = True
                         else:
                             author_removed = False
+
+                        try:
+                            author_comment_praw = reddit.redditor(comment_praw.author)
+                            author_comment_praw.id
+                        except:
+                            author_removed = True
                       
                         if author_removed:
                             Author.objects.update_or_create(
                                 id ='removed',
                                 username = None,
-                                created_utc = datetime(1970,1,1),
+                                created_utc = datetime(1970,1,1, tzinfo=timezone.utc),
                                 defaults={
                                     "has_verified_email": False,
                                     "karma": 0,
                                     "extraction_date": datetime.now(tz=timezone.utc)
                                 }
-                            )
+                            )   
                             author_id = 'removed'
 
                         else:
-                            author_comment_praw = reddit.redditor(comment_praw.author)
-
                             Author.objects.update_or_create(
                                 id = author_comment_praw.id,
                                 username = author_comment_praw.name,
@@ -182,6 +186,8 @@ class Command(BaseCommand):
                             )
                             author_id = author_comment_praw.id
 
+                        if author_id=="removed":
+                            print(author_id)
 
                         Comment.objects.update_or_create(
                             id = comment_praw.id,

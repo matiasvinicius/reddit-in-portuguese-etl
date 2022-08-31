@@ -3,7 +3,7 @@ from django.db import models
 
 class Author(models.Model):
     id = models.CharField(max_length=15, primary_key=True)
-    username = models.CharField(max_length=20)
+    username = models.CharField(max_length=20, null=True)
     created_utc = models.DateTimeField()
     karma = models.IntegerField()
     has_verified_email = models.BooleanField()
@@ -33,7 +33,7 @@ class Submission(models.Model):
     media_only = models.BooleanField()
     is_self = models.BooleanField()
     is_original_content = models.BooleanField()
-    link_flair_text = models.CharField(max_length=1024)
+    link_flair_text = models.CharField(max_length=1024, null=True)
     num_comments = models.IntegerField()
     over_18 = models.BooleanField()
     permalink = models.CharField(max_length=1024)
