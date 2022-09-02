@@ -186,9 +186,6 @@ class Command(BaseCommand):
                             )
                             author_id = author_comment_praw.id
 
-                        if author_id=="removed":
-                            print(author_id)
-
                         Comment.objects.update_or_create(
                             id = comment_praw.id,
                             author = Author.objects.get(id=author_id),
@@ -206,7 +203,6 @@ class Command(BaseCommand):
                             }  
                         )
 
-                before = int((datetime.now(timezone.utc) + timedelta(hours=-6)).timestamp())
                 after = int(submission_praw.created_utc)
 
             print(f"Finished extraction from r/{subreddit_to_extract}")  
