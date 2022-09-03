@@ -6,7 +6,7 @@ class Author(models.Model):
     username = models.CharField(max_length=20, null=True)
     created_utc = models.DateTimeField()
     karma = models.IntegerField()
-    has_verified_email = models.BooleanField()
+    has_verified_email = models.BooleanField(null=True)
     extraction_date = models.DateTimeField()
 
 class Subreddit(models.Model):
