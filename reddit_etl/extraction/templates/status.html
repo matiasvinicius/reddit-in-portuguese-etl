@@ -17,7 +17,7 @@
         <div class="card-body">
           <blockquote class="blockquote mb-0">
             <p> {{ item.selftext }} </p>
-            <footer class="blockquote-footer">{{ item.author_name }} in <cite title="Source Title">{{ item.created_utc }}</cite></footer>
+            <footer class="blockquote-footer">{{ item.author_name }} in <cite title="Source Title">{{item.subreddit_name}} at {{ item.created_utc }}</cite></footer>
           </blockquote>
         </div>
       </div>
