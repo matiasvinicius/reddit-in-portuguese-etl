@@ -1,7 +1,7 @@
 # Reddit in portuguese (ETL)
 Backend server to extract, load and transform data of subreddits from Brazil and Portugal
 
-This project is developed in Django and its objective is to extract historical data from subreddits whose main language is Portuguese, and store this data in a Postgresql database hosted on Heroku.
+This project is developed in Django and its objective is to extract historical data from subreddits whose main language is Portuguese, and store this data in a Postgresql database hosted on Amazon Web Services.
 
 ![img](img/backend.png)
 
@@ -29,4 +29,19 @@ DB_USER=''
 DB_PASSWORD=''
 DB_HOST=''
 DB_PORT=''
+```
+
+
+## Extraction
+The Extraction app does the main thing here. Gets the data from Reddit, do some transformation to create the right way to store the data, and loads it in a database by Django models.
+
+```
+# Examples
+
+# populate the Subreddit database
+# subreddits_list: text file of subreddits separeted by line break - each row of the file have one subreddit name
+python manage.py populate_subreddits --path subreddits_list.txt
+
+# populate comments, authors and submissions from a subreddit in a period of time
+python manage.py populate_db --subreddit 'brasil' --before 2022-09-15 --after 2022-07-01
 ```
